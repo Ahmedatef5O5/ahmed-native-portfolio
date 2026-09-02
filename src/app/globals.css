@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+:root {
+  /* Brand colors - Refined Blue/Slate */
+  --primary: #2563eb;
+  --primary-light: #60a5fa;
+  --primary-deep: #1d4ed8;
+  --accent: #0ea5e9;
+  --accent-soft: #38bdf8;
+  --teal: #14b8a6;
+  --success: #10b981;
+  --error: #ef4444;
+
+  /* Light theme - Slate base */
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --surface-variant: #f1f5f9;
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --border: #e2e8f0;
+}
+
+.dark {
+  /* Dark theme - Deep Navy Glassmorphism */
+  --background: #060913;
+  --surface: #0a0e1c;
+  --surface-variant: #111827;
+  --text: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border: #1e293b;
+
+  /* Adjust brand for dark mode - Luminous blue */
+  --primary: #3b82f6; 
+  --primary-light: #93c5fd;
+  --primary-deep: #2563eb;
+  --accent: #38bdf8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--text);
+  
+  --color-surface: var(--surface);
+  --color-surface-variant: var(--surface-variant);
+  
+  --color-text: var(--text);
+  --color-text-secondary: var(--text-secondary);
+  
+  --color-border: var(--border);
+  
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-deep: var(--primary-deep);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-teal: var(--teal);
+  --color-success: var(--success);
+  --color-error: var(--error);
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-space-grotesk);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+}
