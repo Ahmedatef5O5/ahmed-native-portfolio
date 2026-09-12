@@ -16,6 +16,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ahmedatef.dev"), // TODO: confirm this matches the final production domain before launch
   title: {
     default: "Ahmed Atef — Mobile Engineer & Flutter Developer",
     template: "%s | Ahmed Atef",

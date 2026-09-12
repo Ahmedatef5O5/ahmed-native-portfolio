@@ -27,14 +27,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${project.title} — Case Study | Ahmed Atef`,
       description: project.description.short,
-      images: [
-        {
-          url: `/og/${project.slug}.png`, // Placeholder for actual dynamic OG
-          width: 1200,
-          height: 630,
-          alt: `${project.title} Showcase`,
-        },
-      ],
     },
   };
 }
