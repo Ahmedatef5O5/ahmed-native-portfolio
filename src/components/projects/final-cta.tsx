@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import type { Project } from "@/data/schemas";
 import { ArrowRight } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
@@ -9,7 +8,7 @@ import { projects } from "@/data/projects";
 
 export function FinalCTA({ project }: { project: Project }) {
   const currentIndex = projects.findIndex((p) => p.slug === project.slug);
-  const nextProject = projects[(currentIndex + 1) % projects.length];
+  const nextProject = projects.length > 1 ? projects[(currentIndex + 1) % projects.length] : null;
 
   return (
     <section className="py-24 border-t border-border/50 relative overflow-hidden">

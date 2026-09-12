@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { profileData } from "@/data/profile";
-import { CheckCircle2, ChevronRight, Code2 } from "lucide-react";
+import { CheckCircle2, Code2 } from "lucide-react";
 
 export function AboutSection() {
   return (
@@ -30,7 +30,7 @@ export function AboutSection() {
               
               <div className="prose prose-invert max-w-none text-text-secondary text-lg leading-relaxed space-y-6">
                 <p>
-                  I'm <strong className="text-text font-medium">{profileData.name}</strong>, a {profileData.role}. {profileData.shortIntro}
+                  I&apos;m <strong className="text-text font-medium">{profileData.name}</strong>, a {profileData.role}. {profileData.shortIntro}
                 </p>
                 <p>
                   {profileData.description}
@@ -66,7 +66,7 @@ export function AboutSection() {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
             className="flex flex-col gap-6"
           >
-            {profileData.skillGroups.map((group, groupIndex) => (
+            {profileData.skillGroups.map((group) => (
               <div 
                 key={group.id} 
                 className="bg-surface/50 backdrop-blur-md border border-border/80 rounded-2xl p-6 md:p-8 hover:border-primary/30 hover:bg-surface transition-all duration-300 shadow-sm relative overflow-hidden group"

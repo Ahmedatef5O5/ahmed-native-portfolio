@@ -1,85 +1,82 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import { Download, Cpu, HardDrive, AlertCircle, CheckCircle2, Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { Project, ApkVariant } from "@/data/schemas";
+
+// Format bytes to MB
+function formatSize(bytes?: number) {
+  if (!bytes) return null;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function formatDate(dateString?: string) {
+  if (!dateString) return null;
+  return new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function MetadataGrid({
+  variant,
+  version,
+  buildNumber,
+  releaseDate,
+}: {
+  variant: ApkVariant;
+  version?: string;
+  buildNumber?: string;
+  releaseDate?: string;
+}) {
+  const formattedSize = formatSize(variant.sizeBytes);
+  const formattedDate = formatDate(releaseDate);
+
+  // Only render grid if we have at least one metadata point to show
+  if (!version && !buildNumber && !formattedSize && !formattedDate) return null;
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10 pb-8 border-b border-border/50">
+      {version && (
+        <div>
+          <span className="text-xs text-text-secondary uppercase tracking-wider block mb-1">Version</span>
+          <span className="font-semibold text-text">v{version}</span>
+        </div>
+      )}
+      {buildNumber && (
+        <div>
+          <span className="text-xs text-text-secondary uppercase tracking-wider block mb-1">Build</span>
+          <span className="font-semibold text-text">{buildNumber}</span>
+        </div>
+      )}
+      {formattedSize && (
+        <div>
+          <span className="text-xs text-text-secondary uppercase tracking-wider block mb-1">Size</span>
+          <span className="font-semibold text-text">{formattedSize}</span>
+        </div>
+      )}
+      {formattedDate && (
+        <div>
+          <span className="text-xs text-text-secondary uppercase tracking-wider block mb-1">Date</span>
+          <span className="font-semibold text-text">{formattedDate}</span>
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface DownloadCenterProps {
   project: Project;
 }
 
 export function DownloadCenter({ project }: DownloadCenterProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   if (!project.downloads) return null;
 
   const { version, buildNumber, releaseDate, variants } = project.downloads;
 
-  // Format bytes to MB
-  const formatSize = (bytes?: number) => {
-    if (!bytes) return null;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  };
-
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return null;
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
   // Determine the recommended variant from data only (no unreliable UA detection)
   const recommendedVariant = variants.find(v => v.recommended) || variants[0];
   const otherVariants = variants.filter(v => v.id !== recommendedVariant.id);
-
-  if (!mounted) {
-    return <div className="min-h-[400px] w-full" />; // SSR placeholder
-  }
-
-  // Render Metadata block
-  const MetadataGrid = ({ variant }: { variant: ApkVariant }) => {
-    const formattedSize = formatSize(variant.sizeBytes);
-    const formattedDate = formatDate(releaseDate);
-    
-    // Only render grid if we have at least one metadata point to show
-    if (!version && !buildNumber && !formattedSize && !formattedDate) return null;
-
-    return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10 pb-8 border-b border-border/50">
-        {version && (
-          <div>
-            <span className="text-xs text-text-secondary uppercase tracking-wider block mb-1">Version</span>
-            <span className="font-semibold text-text">v{version}</span>
-          </div>
-        )}
-        {buildNumber && (
-          <div>
-            <span className="text-xs text-text-secondary uppercase tracking-wider block mb-1">Build</span>
-            <span className="font-semibold text-text">{buildNumber}</span>
-          </div>
-        )}
-        {formattedSize && (
-          <div>
-            <span className="text-xs text-text-secondary uppercase tracking-wider block mb-1">Size</span>
-            <span className="font-semibold text-text">{formattedSize}</span>
-          </div>
-        )}
-        {formattedDate && (
-          <div>
-            <span className="text-xs text-text-secondary uppercase tracking-wider block mb-1">Date</span>
-            <span className="font-semibold text-text">{formattedDate}</span>
-          </div>
-        )}
-      </div>
-    );
-  };
 
   return (
     <section className="py-24 bg-surface-variant/30 border-t border-border/50">
@@ -120,7 +117,12 @@ export function DownloadCenter({ project }: DownloadCenterProps) {
               )}
 
               <div className="relative z-10">
-                <MetadataGrid variant={recommendedVariant} />
+                <MetadataGrid
+                  variant={recommendedVariant}
+                  version={version}
+                  buildNumber={buildNumber}
+                  releaseDate={releaseDate}
+                />
               </div>
 
               <div className="mt-auto relative z-10">

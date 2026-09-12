@@ -1,12 +1,37 @@
 "use client";
 
 import * as React from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+function subscribeNoop() {
+  return () => {};
+}
+function getClientSnapshot() {
+  return true;
+}
+function getServerSnapshot() {
+  return false;
+}
+
+function isNavItemActive(
+  item: { href: string; label: string },
+  pathname: string,
+  activeHash: string
+): boolean {
+  if (pathname === "/") {
+    if (item.href === "/") return activeHash === "";
+    if (item.href === "/projects" && activeHash === "#projects") return true;
+    return activeHash === item.href.replace("/", "");
+  }
+  if (pathname.startsWith("/projects") && item.label === "Projects") return true;
+  return pathname === item.href;
+}
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -18,7 +43,7 @@ const navItems = [
 export function Navbar() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
+  const mounted = useSyncExternalStore(subscribeNoop, getClientSnapshot, getServerSnapshot);
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
@@ -29,58 +54,73 @@ export function Navbar() {
   const lastScrollY = React.useRef(0);
   const scrollTimeout = React.useRef<NodeJS.Timeout | null>(null);
 
+  // IntersectionObserver-based active section tracking (decoupled from scroll)
   React.useEffect(() => {
-    setMounted(true);
+    if (pathname !== "/") return;
+
+    const sections = ["projects", "about", "contact"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveHash(`#${entry.target.id}`);
+          }
+        });
+      },
+      { rootMargin: "-200px 0px -60% 0px" }
+    );
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  // Throttled scroll listener using requestAnimationFrame
+  React.useEffect(() => {
+    let ticking = false;
 
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setIsScrolled(currentScrollY > 20);
+      if (ticking) return;
+      ticking = true;
 
-      // Hide on scroll down, show on scroll up
-      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-        setIsHidden(true);
-      } else {
-        setIsHidden(false);
-      }
+      requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        setIsScrolled(currentScrollY > 20);
 
-      lastScrollY.current = currentScrollY;
+        // Hide on scroll down, show on scroll up
+        if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+          setIsHidden(true);
+        } else {
+          setIsHidden(false);
+        }
 
-      // Show header if scrolling stops for 3 seconds
-      if (scrollTimeout.current) {
-        clearTimeout(scrollTimeout.current);
-      }
-      scrollTimeout.current = setTimeout(() => {
-        setIsHidden(false);
-      }, 3000);
+        lastScrollY.current = currentScrollY;
 
-      // Intersection Observer logic for Active Hash
-      if (pathname === "/") {
-        const sections = ["projects", "about", "contact"];
-        let current = "";
-        for (const section of sections) {
-          const el = document.getElementById(section);
-          if (el) {
-            const rect = el.getBoundingClientRect();
-            // If the top of the section is near the top of the viewport
-            if (rect.top <= 200 && rect.bottom >= 200) {
-              current = `#${section}`;
-            }
+        // Show header if scrolling stops for 3 seconds
+        if (scrollTimeout.current) {
+          clearTimeout(scrollTimeout.current);
+        }
+        scrollTimeout.current = setTimeout(() => {
+          setIsHidden(false);
+        }, 3000);
+
+        // Lightweight top/bottom edge cases when on home page
+        if (pathname === "/") {
+          if (currentScrollY < 100) {
+            setActiveHash("");
+          } else if (window.innerHeight + currentScrollY >= document.body.offsetHeight - 50) {
+            setActiveHash("#contact");
           }
         }
-        // If we are at the very top, home is active
-        if (window.scrollY < 100) {
-          current = "";
-        }
-        // If we are at the very bottom, contact is active
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
-          current = "#contact";
-        }
-        setActiveHash(current);
-      }
+
+        ticking = false;
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    // Trigger once on mount
     handleScroll();
 
     return () => {
@@ -116,7 +156,6 @@ export function Navbar() {
               alt="Ahmed Atef"
               width={40}
               height={40}
-              priority
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
           </Link>
@@ -124,22 +163,7 @@ export function Navbar() {
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => {
-              // Determine if active
-              let isActive = false;
-              if (pathname === "/") {
-                if (item.href === "/") {
-                  isActive = activeHash === "";
-                } else {
-                  isActive = activeHash === item.href.replace("/", "");
-                }
-              } else {
-                // If we are on a project page, and the link is Projects
-                if (pathname.startsWith("/projects") && item.label === "Projects") {
-                  isActive = true;
-                } else {
-                  isActive = pathname === item.href;
-                }
-              }
+              const isActive = isNavItemActive(item, pathname, activeHash);
 
               // Update link href for when we're already on home page
               const linkHref = (pathname === "/" && item.href.startsWith("/#"))
@@ -200,20 +224,7 @@ export function Navbar() {
       >
         <nav className="flex flex-col gap-2 p-4">
           {navItems.map((item) => {
-            let isActive = false;
-            if (pathname === "/") {
-              if (item.href === "/") {
-                isActive = activeHash === "";
-              } else {
-                isActive = activeHash === item.href.replace("/", "");
-              }
-            } else {
-              if (pathname.startsWith("/projects") && item.label === "Projects") {
-                isActive = true;
-              } else {
-                isActive = pathname === item.href;
-              }
-            }
+            const isActive = isNavItemActive(item, pathname, activeHash);
 
             const linkHref = (pathname === "/" && item.href.startsWith("/#"))
               ? item.href.replace("/", "")

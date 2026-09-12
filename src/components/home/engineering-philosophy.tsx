@@ -20,7 +20,7 @@ export function EngineeringPhilosophy() {
               How I Think
             </h2>
             <p className="text-lg text-text-secondary leading-relaxed">
-              Engineering isn't just about writing code. It's about designing systems that are reliable, maintainable, and aligned with user needs.
+              Engineering isn&apos;t just about writing code. It&apos;s about designing systems that are reliable, maintainable, and aligned with user needs.
             </p>
           </motion.div>
         </div>

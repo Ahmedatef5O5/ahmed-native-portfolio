@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { projects } from "@/data/projects";
 import { DeviceFrame } from "@/components/ui/device-frame";
 import { MediaPreview } from "@/components/ui/media-preview";
@@ -15,13 +15,8 @@ export function SocialMateShowcase({ hideCTA = false }: { hideCTA?: boolean } = 
   const socialMate = projects.find((p) => p.slug === "social-mate");
   const [activeIndex, setActiveIndex] = useState(0);
   const [deviceType, setDeviceType] = useState<"ios" | "android">("ios");
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!socialMate || !mounted) return <div className="h-screen" />; // SSR placeholder
+  if (!socialMate) return null;
 
   const nextFeature = () => {
     setActiveIndex((prev) => (prev + 1) % socialMate.features.length);
@@ -36,13 +31,21 @@ export function SocialMateShowcase({ hideCTA = false }: { hideCTA?: boolean } = 
 
   // Resolve media item
   const categoryMapping: Record<string, string> = {
-    "Real-time Messaging": "Messaging",
-    "Audio & Video Calls": "Calls",
-    "Stories": "Stories",
-    "Push Notifications": "Themes",
+    "Real-time Messaging & Unified Media Engine": "Real-time Messaging",
+    "LiveKit WebRTC Audio & Video Calling": "WebRTC Audio & Video Calls",
+    "Multi-Provider AI Assistant & AI Chat": "AI Assistant & Chat",
+    "Ephemeral Stories & Short-Form Reels": "Stories & Reels",
+    "Threaded Discussions & Voice Comments": "Feed & Communities",
+    "Custom Sticker Studio & Creative Suite": "Stickers & Media",
+    "Social Graph & Unified Global Search": "Feed & Communities",
+    "12 Bespoke Theming Engines & Biometric Security": "Theming & Security",
+    "Real-time Messaging": "Real-time Messaging",
+    "Audio & Video Calls": "WebRTC Audio & Video Calls",
+    "Stories": "Stories & Reels",
+    "Push Notifications": "Theming & Security",
   };
-  const targetCategory = categoryMapping[activeFeature.title] || "Messaging";
-  const categoryMedia = socialMate.media.gallery?.find(g => g.category === targetCategory);
+  const targetCategory = categoryMapping[activeFeature.title] || socialMate.media.gallery?.find(g => g.category.toLowerCase().includes(activeFeature.title.toLowerCase()))?.category || "Real-time Messaging";
+  const categoryMedia = socialMate.media.gallery?.find(g => g.category === targetCategory) || socialMate.media.gallery?.[0];
   const mediaItem = categoryMedia?.items.find(item => item.role === "storytelling" || item.role === "demo") || categoryMedia?.items[0];
 
   return (

@@ -2,7 +2,6 @@
 
 import { motion } from "motion/react";
 import type { Project } from "@/data/schemas";
-import { cn } from "@/lib/utils";
 
 export function CaseStudyOverview({ project }: { project: Project }) {
   if (!project.caseStudy?.overview) return null;

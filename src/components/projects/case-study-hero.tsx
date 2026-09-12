@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import type { Project } from "@/data/schemas";
-import { ArrowDown, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import { DeviceFrame } from "@/components/ui/device-frame";
 import { MediaPreview } from "@/components/ui/media-preview";

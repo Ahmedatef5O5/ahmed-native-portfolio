@@ -126,7 +126,7 @@ export function ContactSection() {
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-text mb-4 relative z-10">
-            Let's build something.
+            Let&apos;s build something.
           </h2>
           <p className="text-base sm:text-lg text-text-secondary mb-10 max-w-xl mx-auto relative z-10 leading-relaxed">
             Whether you have a product in mind, need architecture consulting, or want to discuss a full-time role, reach out directly.

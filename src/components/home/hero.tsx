@@ -50,7 +50,7 @@ export function Hero() {
             transition={{ duration: ANIM_DURATIONS.reveal, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
             className="text-5xl md:text-7xl font-display font-bold tracking-tight text-text mb-6 leading-tight"
           >
-            Hi, I'm <span className="text-primary">Ahmed Atef.</span>
+            Hi, I&apos;m <span className="text-primary">Ahmed Atef.</span>
           </motion.h1>
 
           <motion.h2
