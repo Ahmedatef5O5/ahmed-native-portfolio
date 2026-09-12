@@ -1,0 +1,36 @@
+{
+  "$schema": "https://repomix.com/schemas/latest/schema.json",
+  "output": {
+    "filePath": "repomix-output.md",
+    "style": "markdown",
+    "fileSummary": true,
+    "directoryStructure": true,
+    "removeComments": false,
+    "removeEmptyLines": false,
+    "topFilesLength": 5,
+    "showLineNumbers": false,
+    "copyToClipboard": false
+  },
+  "include": [
+    "src/**/*.{ts,tsx,css}",
+    "package.json",
+    "tsconfig.json",
+    "next.config.ts"
+  ],
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "public/**",
+      "*.svg",
+      "*.png",
+      "*.webp",
+      "*.jpg",
+      "*.ps1",
+      "package-lock.json",
+      "repomix-output.*",
+      "CLAUDE.md",
+      "AGENTS.md"
+    ]
+  }
+}
