@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 repomix-output.md
+repomix_for_all_files_for_fin_dash_app_temp_file.md
+repomix_for_all_files_for_news_wave_app_temp_file.md
+repomix_for_all_files_for_native_portfolio_web_temp_file.md
+setup_notes.md
