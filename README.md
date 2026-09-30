@@ -403,7 +403,7 @@ The portfolio was engineered to meet the highest industry standards for modern w
 
 <div align="center">
 
-<img src="./public/assets/profile/profile.webp" alt="Ahmed Atef" width="120" style="border-radius: 50%; border: 3px solid #2563eb; box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);" />
+<!-- <img src="./public/assets/profile/profile.webp" alt="Ahmed Atef" width="120" style="border-radius: 50%; border: 3px solid #2563eb; box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);" /> -->
 
 ### **Ahmed Atef**
 **Flutter Developer & Mobile Systems Engineer**  
