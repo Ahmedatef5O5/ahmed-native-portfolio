@@ -16,27 +16,46 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ahmedatef.dev"), // TODO: confirm this matches the final production domain before launch
+  metadataBase: new URL("https://www.ahmedatef.tech"),
   title: {
     default: "Ahmed Atef — Mobile Engineer & Flutter Developer",
     template: "%s | Ahmed Atef",
   },
-  description: "Production-grade digital products built with Feature-First Clean Architecture, Flutter, and modern web technologies.",
-  keywords: ["Ahmed Atef", "Flutter Developer", "Mobile Engineer", "Software Engineer", "Next.js", "React"],
+  description:
+    "Production-grade digital products built with Feature-First Clean Architecture, Flutter, and modern web technologies.",
+  keywords: [
+    "Ahmed Atef",
+    "Flutter Developer",
+    "Mobile Engineer",
+    "Software Engineer",
+    "Next.js",
+    "React",
+  ],
   authors: [{ name: "Ahmed Atef" }],
   creator: "Ahmed Atef",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://ahmedatef.dev", // Replace with real URL later
+    url: "https://www.ahmedatef.tech",
     title: "Ahmed Atef — Mobile Engineer & Flutter Developer",
-    description: "Production-grade digital products built with Feature-First Clean Architecture, Flutter, and modern web technologies.",
+    description:
+      "Production-grade digital products built with Feature-First Clean Architecture, Flutter, and modern web technologies.",
     siteName: "Ahmed Atef Portfolio",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Ahmed Atef — Mobile Engineer & Flutter Developer",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ahmed Atef — Mobile Engineer",
-    description: "Production-grade digital products built with Feature-First Clean Architecture.",
+    title: "Ahmed Atef — Mobile Engineer & Flutter Developer",
+    description:
+      "Production-grade digital products built with Feature-First Clean Architecture.",
+    images: ["/opengraph-image"],
   },
 };
 
