@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   /* Brand colors - Refined Blue/Slate */
@@ -18,6 +19,13 @@
   --text: #0f172a;
   --text-secondary: #475569;
   --border: #e2e8f0;
+
+  /* Glass system (light) */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-strong: rgba(255, 255, 255, 0.86);
+  --glass-border: rgba(15, 23, 42, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.8);
+  --glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 12px 32px -12px rgba(15, 23, 42, 0.18);
 }
 
 .dark {
@@ -34,6 +42,13 @@
   --primary-light: #93c5fd;
   --primary-deep: #2563eb;
   --accent: #38bdf8;
+
+  /* Glass system (dark) */
+  --glass-bg: rgba(10, 14, 28, 0.55);
+  --glass-bg-strong: rgba(10, 14, 28, 0.78);
+  --glass-border: rgba(148, 163, 184, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.06);
+  --glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 30px 60px -25px rgba(0, 0, 0, 0.65);
 }
 
 @theme inline {
@@ -64,4 +79,84 @@
 body {
   background-color: var(--background);
   color: var(--text);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+/* Cinematic glass surfaces */
+@utility glass-panel {
+  background-color: var(--glass-bg);
+  background-image: linear-gradient(180deg, var(--glass-highlight), transparent 45%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+}
+
+@utility glass-panel-strong {
+  background-color: var(--glass-bg-strong);
+  background-image: linear-gradient(180deg, var(--glass-highlight), transparent 45%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+}
+
+/* Fluid typography scale */
+@utility type-display {
+  font-size: clamp(2.75rem, 1.4rem + 5.2vw, 5.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  font-weight: 700;
+}
+
+@utility type-headline {
+  font-size: clamp(2rem, 1.3rem + 2.6vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+
+@utility type-title {
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+@utility type-lead {
+  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem);
+  line-height: 1.6;
+}
+
+@utility type-eyebrow {
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
 }

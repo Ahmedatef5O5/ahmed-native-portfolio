@@ -13,6 +13,7 @@
   },
   "include": [
     "src/**/*.{ts,tsx,css}",
+    ".agents/**",
     "package.json",
     "tsconfig.json",
     "next.config.ts"

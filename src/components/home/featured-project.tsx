@@ -1,6 +1,7 @@
 import { projects } from "@/data/projects";
 import { DeviceFrame } from "@/components/ui/device-frame";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import * as Icons from "lucide-react";
@@ -18,9 +19,20 @@ export function FeaturedProject() {
           <span className="text-sm font-semibold tracking-wider text-primary uppercase mb-3 block">
             Featured Project
           </span>
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-text mb-6">
-            {socialMate.title}
-          </h2>
+          <div className="flex items-center justify-center gap-3.5 mb-4">
+            <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-primary/20 border border-border/80 flex-shrink-0 bg-[#060913]">
+              <Image
+                src="/assets/projects/social-mate/icon.png"
+                alt={`${socialMate.title} App Icon`}
+                fill
+                sizes="40px"
+                className="object-cover"
+              />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-text">
+              {socialMate.title}
+            </h2>
+          </div>
           <p className="text-xl text-text-secondary">
             {socialMate.positioning}
           </p>
@@ -35,22 +47,16 @@ export function FeaturedProject() {
               style={{ background: `radial-gradient(circle, ${socialMate.theme.primary}, transparent 70%)` }}
             />
             
-            <DeviceFrame className="relative z-10 -rotate-2 hover:rotate-0 transition-transform duration-500">
-              {/* Fallback mockup content since real images don't exist yet */}
-              <div className="w-full h-full flex flex-col items-center justify-center bg-surface-variant text-center p-6">
-                <div 
-                  className="w-16 h-16 rounded-2xl mb-4 flex items-center justify-center shadow-lg"
-                  style={{ background: `linear-gradient(135deg, ${socialMate.theme.primary}, ${socialMate.theme.secondary})` }}
-                >
-                  <Icons.MessageSquare size={28} className="text-white" />
-                </div>
-                <h3 className="font-bold text-lg mb-2">Social Mate</h3>
-                <p className="text-sm text-text-secondary mb-8">Sign in to continue</p>
-                <div className="w-full space-y-3">
-                  <div className="h-12 w-full bg-surface rounded-xl border border-border" />
-                  <div className="h-12 w-full bg-surface rounded-xl border border-border" />
-                  <div className="h-12 w-full rounded-xl mt-4" style={{ backgroundColor: socialMate.theme.primary }} />
-                </div>
+            <DeviceFrame className="relative z-10 -rotate-2 hover:rotate-0 transition-transform duration-500" type="android">
+              <div className="relative w-full h-full">
+                <Image
+                  src={socialMate.media.hero?.url || "/assets/projects/social-mate/home_view.webp"}
+                  alt="Social Mate Main View"
+                  fill
+                  sizes="280px"
+                  priority
+                  className="object-cover object-top"
+                />
               </div>
             </DeviceFrame>
           </div>

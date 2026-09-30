@@ -52,7 +52,7 @@ function ContactCard({ link }: { link: SocialLink }) {
       href={link.href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative flex items-center justify-between p-5 sm:p-6 rounded-2xl bg-surface/50 backdrop-blur-xl border border-border/80 hover:border-primary/40 hover:bg-surface/80 transition-all duration-300 shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5"
+      className="group relative flex items-center justify-between p-5 sm:p-6 rounded-2xl glass-panel hover:border-primary/50 transition-all duration-300 hover:shadow-primary/10 hover:-translate-y-0.5"
       aria-label={`${link.actionText}: ${link.value}`}
     >
       <div className="flex items-center gap-4 min-w-0">

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import Image from "next/image";
 import type { Project } from "@/data/schemas";
 import { Download } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
@@ -11,8 +12,10 @@ export function CaseStudyHero({ project }: { project: Project }) {
   return (
     <section className="relative pt-32 pb-20 overflow-hidden">
       {/* Dynamic Background Glow */}
-      <div 
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[600px] opacity-10 blur-[120px] pointer-events-none rounded-full"
+      <div
+        aria-hidden="true"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[600px] opacity-25 blur-[120px] pointer-events-none rounded-full"
+        style={{ background: `radial-gradient(circle at center, ${project.theme.primary}, transparent 70%)` }}
       />
 
       <div className="container mx-auto px-4 md:px-8 max-w-6xl relative z-10 flex flex-col items-center text-center">
@@ -28,14 +31,28 @@ export function CaseStudyHero({ project }: { project: Project }) {
           </span>
         </motion.div>
 
-        <motion.h1
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-          className="text-5xl md:text-7xl font-display font-bold text-text mb-6"
+          className="flex items-center justify-center gap-4 md:gap-5 mb-6"
         >
-          {project.title}
-        </motion.h1>
+          {project.icon && (
+            <div className="relative w-12 h-12 md:w-16 md:h-16 rounded-2xl overflow-hidden shadow-lg shadow-primary/20 border border-border/80 flex-shrink-0 bg-[#060913]">
+              <Image
+                src={project.icon}
+                alt={`${project.title} App Icon`}
+                fill
+                sizes="64px"
+                priority
+                className="object-cover"
+              />
+            </div>
+          )}
+          <h1 className="text-5xl md:text-7xl font-display font-bold text-text">
+            {project.title}
+          </h1>
+        </motion.div>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -77,7 +94,16 @@ export function CaseStudyHero({ project }: { project: Project }) {
 
           {project.downloads && (
             <a
-              href="#downloads"
+              href="#download-cards"
+              onClick={(e) => {
+                const target =
+                  document.getElementById("download-cards") || document.getElementById("downloads");
+                if (target) {
+                  e.preventDefault();
+                  target.scrollIntoView({ behavior: "smooth", block: "center" });
+                  window.history.replaceState(null, "", "#download-cards");
+                }
+              }}
               className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-surface text-text font-medium border border-border hover:bg-surface-variant transition-colors"
             >
               <Download size={18} />
@@ -96,7 +122,7 @@ export function CaseStudyHero({ project }: { project: Project }) {
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-background to-transparent z-20 pointer-events-none" />
           
           <DeviceFrame className="w-full max-w-[340px] h-[720px] mx-auto z-10 relative">
-            <MediaPreview media={project.media.hero} priority />
+            <MediaPreview media={project.media.hero} className="w-full h-full" priority />
           </DeviceFrame>
         </motion.div>
       </div>

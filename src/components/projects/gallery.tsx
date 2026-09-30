@@ -93,6 +93,12 @@ export function ProjectGallery({ categories }: ProjectGalleryProps) {
 
   if (!categories || categories.length === 0) return null;
 
+  const isResponsiveShowcase =
+    currentItems.length > 0 &&
+    currentItems.every(
+      (item) => typeof item.width === "number" && typeof item.height === "number"
+    );
+
   return (
     <div className="w-full">
       {/* Category Tabs */}
@@ -113,43 +119,111 @@ export function ProjectGallery({ categories }: ProjectGalleryProps) {
         ))}
       </div>
 
-      {/* Grid Layout (Premium: Featured items are larger) */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        <AnimatePresence mode="popLayout">
-          {currentItems.map((item, index) => {
-            const isFeatured = item.role === "storytelling" || item.role === "demo" || index === 0;
-            return (
-              <motion.button
-                key={item.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4 }}
-                className={cn(
-                  "relative rounded-3xl overflow-hidden bg-surface-variant border border-border group cursor-zoom-in block outline-none focus-visible:ring-2 focus-visible:ring-primary",
-                  isFeatured ? "col-span-2 row-span-2 aspect-[4/5] md:aspect-square" : "col-span-1 aspect-[9/19]"
-                )}
-                onClick={() => openLightbox(index)}
-                aria-label={`View ${item.alt} fullscreen`}
-              >
-                <MediaPreview 
-                  media={item} 
-                  objectFit="cover" 
-                  className={cn("absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105", isFeatured ? "scale-100" : "scale-[1.02]")} 
-                />
-                
-                {/* Optional overlay for caption preview */}
-                {item.caption && isFeatured && (
-                  <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-background/90 via-background/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-left">
-                    <p className="text-white text-sm font-medium leading-relaxed">{item.caption}</p>
+      {isResponsiveShowcase ? (
+        <div className="flex flex-col gap-10">
+          <AnimatePresence mode="popLayout">
+            {currentItems.map((item, index) => {
+              const isLandscape = (item.width ?? 0) > (item.height ?? 0);
+              return (
+                <motion.div
+                  key={item.id}
+                  layout
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 16 }}
+                  transition={{ duration: 0.4, delay: index * 0.06 }}
+                  className="rounded-3xl bg-surface border border-border/80 p-6 md:p-8 shadow-sm"
+                >
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-5 border-b border-border/50">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-3">
+                        <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20">
+                          0{index + 1} · Viewport Tier
+                        </span>
+                        <span className="text-xs font-mono text-text-secondary">
+                          {item.width} × {item.height}px
+                        </span>
+                      </div>
+                      <h3 className="text-xl md:text-2xl font-display font-bold text-text">
+                        {item.caption || item.alt}
+                      </h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => openLightbox(index)}
+                      className="self-start md:self-center px-4 py-2 rounded-full text-xs font-semibold bg-surface-variant text-text-secondary hover:text-text hover:bg-border transition-colors"
+                    >
+                      Inspect Fullscreen
+                    </button>
                   </div>
-                )}
-              </motion.button>
-            );
-          })}
-        </AnimatePresence>
-      </div>
+
+                  {item.description && (
+                    <p className="text-sm md:text-base text-text-secondary leading-relaxed mb-6 max-w-4xl">
+                      {item.description}
+                    </p>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => openLightbox(index)}
+                    aria-label={`View ${item.alt} fullscreen`}
+                    className={cn(
+                      "relative w-full rounded-2xl overflow-hidden bg-surface-variant/60 border border-border/60 group cursor-zoom-in block outline-none focus-visible:ring-2 focus-visible:ring-primary p-3 md:p-6",
+                      isLandscape
+                        ? "aspect-[16/10] md:aspect-[16/9]"
+                        : "max-w-sm mx-auto aspect-[9/16]"
+                    )}
+                  >
+                    <MediaPreview
+                      media={item}
+                      objectFit="contain"
+                      className="w-full h-full transition-transform duration-500 ease-out group-hover:scale-[1.01]"
+                    />
+                  </button>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </div>
+      ) : (
+        /* Grid Layout (Premium: Featured items are larger) */
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <AnimatePresence mode="popLayout">
+            {currentItems.map((item, index) => {
+              const isFeatured = false;
+              return (
+                <motion.button
+                  key={item.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4 }}
+                  className={cn(
+                    "relative rounded-3xl overflow-hidden bg-surface-variant border border-border group cursor-zoom-in block outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                    isFeatured ? "col-span-2 row-span-2 aspect-[4/5] md:aspect-square" : "col-span-1 aspect-[9/19]"
+                  )}
+                  onClick={() => openLightbox(index)}
+                  aria-label={`View ${item.alt} fullscreen`}
+                >
+                  <MediaPreview 
+                    media={item} 
+                    objectFit={item.type === "video" ? "contain" : "cover"} 
+                    className={cn("absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105", isFeatured ? "scale-100" : "scale-[1.02]")} 
+                  />
+                  
+                  {/* Optional overlay for caption preview */}
+                  {item.caption && isFeatured && (
+                    <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-background/90 via-background/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-left">
+                      <p className="text-white text-sm font-medium leading-relaxed">{item.caption}</p>
+                    </div>
+                  )}
+                </motion.button>
+              );
+            })}
+          </AnimatePresence>
+        </div>
+      )}
 
       {/* Lightbox */}
       <AnimatePresence>
@@ -175,7 +249,7 @@ export function ProjectGallery({ categories }: ProjectGalleryProps) {
             </button>
             
             <div 
-              className="relative w-full max-w-5xl h-[70vh] md:h-[80vh] bg-transparent flex flex-col items-center justify-center"
+              className="relative w-full max-w-5xl flex-1 min-h-0 max-h-[64vh] md:max-h-[72vh] bg-transparent flex flex-col items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
               <AnimatePresence mode="wait">
@@ -193,18 +267,24 @@ export function ProjectGallery({ categories }: ProjectGalleryProps) {
                     objectFit="contain"
                     className="w-full h-full bg-transparent" 
                   />
-                  {currentItems[selectedIndex].caption && (
-                    <div className="absolute bottom-[-3rem] left-0 right-0 text-center">
-                       <p className="text-text-secondary text-lg">{currentItems[selectedIndex].caption}</p>
-                    </div>
-                  )}
                 </motion.div>
               </AnimatePresence>
             </div>
 
+            {currentItems[selectedIndex]?.caption && (
+              <div
+                className="mt-4 px-4 max-w-3xl text-center shrink-0"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <p className="text-text-secondary text-sm md:text-base leading-relaxed">
+                  {currentItems[selectedIndex].caption}
+                </p>
+              </div>
+            )}
+
             {/* Controls */}
             <div 
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 p-2.5 rounded-full bg-surface-variant/80 backdrop-blur-md border border-border shadow-2xl"
+              className="mt-4 shrink-0 flex items-center gap-6 p-2.5 rounded-full bg-surface-variant/80 backdrop-blur-md border border-border shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <button 

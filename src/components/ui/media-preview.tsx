@@ -27,6 +27,9 @@ export function MediaPreview({ media, className, priority = false, objectFit = "
           setIsInView(true);
           // Optional: Pause video when out of view to save CPU
           if (videoRef.current) {
+            if (videoRef.current.readyState >= 1) {
+              setIsLoaded(true);
+            }
             videoRef.current.play().catch(() => {}); // handle auto-play restrictions silently
           }
         } else {
@@ -46,7 +49,7 @@ export function MediaPreview({ media, className, priority = false, objectFit = "
 
   if (media.type === "video") {
     return (
-      <div ref={containerRef} className={cn("relative overflow-hidden bg-surface-variant flex items-center justify-center", className)}>
+      <div ref={containerRef} className={cn("relative w-full h-full overflow-hidden bg-surface-variant flex items-center justify-center", className)}>
         {!isLoaded && media.poster && (
           <Image
             src={media.poster}
@@ -56,7 +59,7 @@ export function MediaPreview({ media, className, priority = false, objectFit = "
             className={cn("absolute inset-0 z-0 blur-md transition-opacity duration-700", objectFit === "cover" ? "object-cover" : "object-contain")}
           />
         )}
-        {isInView && (
+        {(isInView || priority || media.priority) && (
           <video
             ref={videoRef}
             src={media.url}
@@ -66,7 +69,10 @@ export function MediaPreview({ media, className, priority = false, objectFit = "
             loop
             playsInline
             controls={prefersReducedMotion} // Give controls if autoplay is disabled
+            onLoadedMetadata={() => setIsLoaded(true)}
             onLoadedData={() => setIsLoaded(true)}
+            onCanPlay={() => setIsLoaded(true)}
+            onPlaying={() => setIsLoaded(true)}
             className={cn("w-full h-full relative z-10 transition-opacity duration-700", 
               isLoaded ? "opacity-100" : "opacity-0",
               objectFit === "cover" ? "object-cover" : "object-contain"
@@ -79,7 +85,7 @@ export function MediaPreview({ media, className, priority = false, objectFit = "
 
   // Image or GIF
   return (
-    <div ref={containerRef} className={cn("relative overflow-hidden bg-surface-variant flex items-center justify-center", className)}>
+    <div ref={containerRef} className={cn("relative w-full h-full overflow-hidden bg-surface-variant flex items-center justify-center", className)}>
       {(isInView || priority) && (
         <Image
           src={media.url}

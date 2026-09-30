@@ -15,10 +15,12 @@ export interface MediaItem {
   category?: string;
   role?: MediaRole;
   priority?: boolean;
+  featureId?: string;
 }
 
 export interface ProjectMedia {
   hero: MediaItem;
+  cover?: MediaItem;
   showcase?: MediaItem[];
   gallery?: { category: string; items: MediaItem[] }[];
 }
@@ -33,6 +35,7 @@ export interface ApkVariant {
   fileUrl: string;
   fileName: string;
   sizeBytes?: number;
+  sha256?: string;
   recommended?: boolean;
   status?: "available" | "pending";
 }
@@ -41,6 +44,9 @@ export interface DownloadCenter {
   version?: string;
   buildNumber?: string;
   releaseDate?: string;
+  releaseUrl?: string;
+  commitSha?: string;
+  androidCompatibility?: string;
   variants: ApkVariant[];
 }
 
@@ -81,6 +87,7 @@ export interface Project {
   slug: string;
   title: string;
   tagline: string;
+  icon?: string;
   description: {
     short: string;
     full: string;

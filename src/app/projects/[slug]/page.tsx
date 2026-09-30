@@ -55,9 +55,9 @@ export default async function ProjectCaseStudy({ params }: Props) {
       <CaseStudyHero project={project} />
       <CaseStudyOverview project={project} />
       
-      {project.slug === "social-mate" && (
+      {(project.slug === "social-mate" || project.slug === "newswave" || project.slug === "fin-dash") && (
         <div className="py-12">
-          <SocialMateShowcase hideCTA={true} />
+          <SocialMateShowcase hideCTA={true} projectSlug={project.slug} />
         </div>
       )}
 
@@ -67,9 +67,13 @@ export default async function ProjectCaseStudy({ params }: Props) {
       <section className="py-24">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
           <div className="mb-16 md:text-center">
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-text mb-4">Screens Gallery</h2>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-text mb-4">
+              {project.slug === "fin-dash" ? "Adaptive Responsive Layout System" : "Screens Gallery"}
+            </h2>
             <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-              A comprehensive look at the user interface and interactions.
+              {project.slug === "fin-dash"
+                ? "One unified financial dashboard adapting across Desktop (≥ 1300px), Tablet (800px – 1299px), and Mobile (< 800px) breakpoints."
+                : "A comprehensive look at the user interface and interactions."}
             </p>
           </div>
           <ProjectGallery categories={galleryCategories} />

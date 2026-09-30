@@ -30,7 +30,9 @@ export function CaseStudyOverview({ project }: { project: Project }) {
             </div>
             <div>
               <span className="block text-sm font-medium text-text-secondary mb-2">Platform</span>
-              <span className="font-semibold text-text">iOS & Android</span>
+              <span className="font-semibold text-text">
+                {project.slug === "fin-dash" ? "Desktop, Tablet & Mobile" : "iOS & Android"}
+              </span>
             </div>
             <div className="col-span-2">
               <span className="block text-sm font-medium text-text-secondary mb-2">Tech Stack</span>

@@ -19,8 +19,8 @@ export function Hero() {
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-24 pb-12 bg-background">
       {/* Deep Navy Atmospheric Light Fields */}
-      <div className="absolute top-1/4 left-0 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,var(--primary-deep)_0,transparent_60%)] opacity-[0.03] pointer-events-none rounded-full blur-[100px]" />
-      <div className="absolute bottom-0 right-1/4 w-[800px] h-[600px] bg-[radial-gradient(ellipse_at_center,var(--primary)_0,transparent_60%)] opacity-[0.04] pointer-events-none rounded-full blur-[120px]" />
+      <div className="absolute top-1/4 left-0 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,var(--primary-deep)_0,transparent_60%)] opacity-[0.12] pointer-events-none rounded-full blur-[100px]" />
+      <div className="absolute bottom-0 right-1/4 w-[800px] h-[600px] bg-[radial-gradient(ellipse_at_center,var(--primary)_0,transparent_60%)] opacity-[0.14] pointer-events-none rounded-full blur-[120px]" />
 
       <div className="container mx-auto px-4 md:px-8 max-w-6xl relative z-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
 
@@ -31,7 +31,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: ANIM_DURATIONS.ui, ease: "easeOut" }}
-            className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-surface-variant/50 border border-border/80 backdrop-blur-sm mb-8 shadow-sm"
+            className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full glass-panel mb-8"
           >
             <span className="relative flex h-2 w-2">
               {!prefersReducedMotion && (
@@ -48,7 +48,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: ANIM_DURATIONS.reveal, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-            className="text-5xl md:text-7xl font-display font-bold tracking-tight text-text mb-6 leading-tight"
+            className="type-display font-display text-text mb-6"
           >
             Hi, I&apos;m <span className="text-primary">Ahmed Atef.</span>
           </motion.h1>
@@ -57,7 +57,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: ANIM_DURATIONS.reveal, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-            className="text-2xl md:text-3xl font-medium text-text-secondary mb-8 max-w-xl leading-relaxed"
+            className="type-title font-medium text-text-secondary mb-8 max-w-xl"
           >
             Flutter Developer & Mobile Engineer.
             <br />
@@ -89,7 +89,7 @@ export function Hero() {
 
             <Link
               href="/projects/social-mate"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-surface/50 backdrop-blur-md text-text font-medium border border-border/80 hover:bg-surface hover:border-primary/30 transition-all duration-300 shadow-sm"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl glass-panel text-text font-medium hover:border-primary/40 transition-all duration-300"
             >
               <Code2 size={18} className="text-text-secondary group-hover:text-primary transition-colors" />
               View Social Mate
@@ -109,7 +109,7 @@ export function Hero() {
             animate={{ opacity: 1, y: 0, rotateX: 0 }}
             transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
             style={{ perspective: "1000px" }}
-            className="absolute bottom-0 right-0 w-[250px] sm:w-[290px] lg:w-[330px] h-[180px] sm:h-[210px] lg:h-[240px] rounded-[1.75rem] lg:rounded-[2rem] bg-surface-variant/40 backdrop-blur-xl border border-white/5 shadow-2xl flex flex-col justify-end p-5 sm:p-6 overflow-hidden z-10"
+            className="absolute bottom-0 right-0 w-[250px] sm:w-[290px] lg:w-[330px] h-[180px] sm:h-[210px] lg:h-[240px] rounded-[1.75rem] lg:rounded-[2rem] glass-panel flex flex-col justify-end p-5 sm:p-6 overflow-hidden z-10"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-50" />
 

@@ -5,16 +5,27 @@ import { motion, AnimatePresence } from "motion/react";
 import { projects } from "@/data/projects";
 import { DeviceFrame } from "@/components/ui/device-frame";
 import { MediaPreview } from "@/components/ui/media-preview";
+import { Reveal } from "@/components/ui/reveal";
 import * as Icons from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
-export function SocialMateShowcase({ hideCTA = false }: { hideCTA?: boolean } = {}) {
-  const socialMate = projects.find((p) => p.slug === "social-mate");
+const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+export function SocialMateShowcase({
+  hideCTA = false,
+  projectSlug = "social-mate",
+}: {
+  hideCTA?: boolean;
+  projectSlug?: string;
+} = {}) {
+  const socialMate = projects.find((p) => p.slug === projectSlug);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [deviceType, setDeviceType] = useState<"ios" | "android">("ios");
+  const [activeViewportIndex, setActiveViewportIndex] = useState(0);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   if (!socialMate) return null;
 
@@ -30,108 +41,228 @@ export function SocialMateShowcase({ hideCTA = false }: { hideCTA?: boolean } = 
   const Icon = Icons[activeFeature.icon as keyof typeof Icons] as React.ElementType || Icons.Circle;
 
   // Resolve media item
-  const categoryMapping: Record<string, string> = {
-    "Real-time Messaging & Unified Media Engine": "Real-time Messaging",
-    "LiveKit WebRTC Audio & Video Calling": "WebRTC Audio & Video Calls",
-    "Multi-Provider AI Assistant & AI Chat": "AI Assistant & Chat",
-    "Ephemeral Stories & Short-Form Reels": "Stories & Reels",
-    "Threaded Discussions & Voice Comments": "Feed & Communities",
-    "Custom Sticker Studio & Creative Suite": "Stickers & Media",
-    "Social Graph & Unified Global Search": "Feed & Communities",
-    "12 Bespoke Theming Engines & Biometric Security": "Theming & Security",
-    "Real-time Messaging": "Real-time Messaging",
-    "Audio & Video Calls": "WebRTC Audio & Video Calls",
-    "Stories": "Stories & Reels",
-    "Push Notifications": "Theming & Security",
+  const allGalleryItems = socialMate.media.gallery?.flatMap((g) => g.items) || [];
+  const featureViewportItems = allGalleryItems.filter(
+    (item) =>
+      item.featureId === activeFeature.id &&
+      typeof item.width === "number" &&
+      typeof item.height === "number"
+  );
+  const hasMultiViewportItems =
+    activeFeature.id === "adaptive-responsive-dashboard" &&
+    featureViewportItems.length > 1;
+
+  // Deterministic feature-specific resolution:
+  // 1. featureId + role === "demo"
+  // 2. featureId + role === "storytelling"
+  // 3. featureId only
+  const featureMedia =
+    allGalleryItems.find((item) => item.featureId === activeFeature.id && item.role === "demo") ||
+    allGalleryItems.find((item) => item.featureId === activeFeature.id && item.role === "storytelling") ||
+    allGalleryItems.find((item) => item.featureId === activeFeature.id);
+
+  // Legacy fallback if no feature-specific media is bound:
+  // 4. Category match -> storytelling/demo -> first item
+  // 5. Existing fallback UI handled below if mediaItem is undefined
+  const legacyFallback = () => {
+    const matchedCategory = socialMate.media.gallery?.find(
+      (g) =>
+        activeFeature.title.toLowerCase().includes(g.category.toLowerCase()) ||
+        g.category.toLowerCase().includes(activeFeature.title.toLowerCase())
+    );
+    if (matchedCategory) {
+      return (
+        matchedCategory.items.find((item) => item.role === "storytelling" || item.role === "demo") ||
+        matchedCategory.items[0]
+      );
+    }
+    const feedCategory = socialMate.media.gallery?.find((g) => g.category === "Feed & Communities");
+    return (
+      feedCategory?.items.find((item) => item.role === "storytelling" || item.role === "demo") ||
+      socialMate.media.gallery?.[0]?.items[0]
+    );
   };
-  const targetCategory = categoryMapping[activeFeature.title] || socialMate.media.gallery?.find(g => g.category.toLowerCase().includes(activeFeature.title.toLowerCase()))?.category || "Real-time Messaging";
-  const categoryMedia = socialMate.media.gallery?.find(g => g.category === targetCategory) || socialMate.media.gallery?.[0];
-  const mediaItem = categoryMedia?.items.find(item => item.role === "storytelling" || item.role === "demo") || categoryMedia?.items[0];
+
+  const rawMediaItem = hasMultiViewportItems
+    ? featureViewportItems[activeViewportIndex % featureViewportItems.length]
+    : featureMedia || legacyFallback();
+
+  const isLandscapeMedia = Boolean(
+    rawMediaItem?.width && rawMediaItem?.height && rawMediaItem.width > rawMediaItem.height
+  );
+
+  // Use the bezel-free screen crop when rendering FinDash mobile viewport inside portrait DeviceFrame
+  const mediaItem =
+    rawMediaItem && !isLandscapeMedia && socialMate.slug === "fin-dash"
+      ? { ...rawMediaItem, url: socialMate.media.hero.url }
+      : rawMediaItem;
+
+  const screenTransition = prefersReducedMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: { duration: 0.2 },
+      }
+    : {
+        initial: { opacity: 0, scale: 1.04, filter: "blur(8px)" },
+        animate: { opacity: 1, scale: 1, filter: "blur(0px)" },
+        exit: { opacity: 0, scale: 0.98, filter: "blur(6px)" },
+        transition: { duration: 0.6, ease: EASE_OUT },
+      };
+
+  const textTransition = prefersReducedMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: { duration: 0.2 },
+      }
+    : {
+        initial: { opacity: 0, y: 16, filter: "blur(6px)" },
+        animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+        exit: { opacity: 0, y: -16, filter: "blur(6px)" },
+        transition: { duration: 0.45, ease: EASE_OUT },
+      };
 
   return (
     <section className="py-24 bg-background overflow-hidden relative">
       <div className="container mx-auto px-4 md:px-8 max-w-6xl relative z-10">
-        
-        <div className="text-center mb-16 md:mb-20">
-          <span className="text-sm font-semibold tracking-wider text-primary uppercase mb-3 block">
-            Featured Project
+
+        <Reveal className="text-center mb-16 md:mb-20">
+          <span className="type-eyebrow text-primary mb-3 block">
+            {hideCTA ? "Interactive Feature Showcase" : "Featured Project"}
           </span>
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-text mb-6">
+          <h2 className="type-headline font-display text-text mb-6">
             {socialMate.title}
           </h2>
-          <p className="text-xl text-text-secondary max-w-2xl mx-auto">
+          <p className="type-lead text-text-secondary max-w-2xl mx-auto">
             {socialMate.positioning}
           </p>
-        </div>
+        </Reveal>
 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-          
-          {/* Left Column: Interactive Device */}
-          <div className="flex flex-col items-center justify-center w-full">
-            {/* Device Switcher (iOS / Android) */}
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-surface-variant/80 border border-border/60 mb-6 backdrop-blur-sm shadow-sm">
-              {(["ios", "android"] as const).map((type) => (
-                <button
-                  key={type}
-                  onClick={() => setDeviceType(type)}
-                  className={cn(
-                    "px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wider transition-all duration-300",
-                    deviceType === type 
-                      ? "bg-surface shadow-sm text-primary border border-border/80" 
-                      : "text-text-secondary hover:text-text hover:bg-surface/40 border border-transparent"
-                  )}
+
+          {/* Left Column: Cinematic Device */}
+          <Reveal className="flex flex-col items-center justify-center w-full" delay={0.15} y={48} duration={1}>
+            {hasMultiViewportItems && (
+              <div className="inline-flex flex-wrap items-center justify-center gap-2 p-1.5 rounded-2xl bg-surface-variant/80 border border-border mb-6">
+                {featureViewportItems.map((item, idx) => {
+                  const shortLabel = item.caption?.split("—")[0]?.trim() || `Layout ${idx + 1}`;
+                  const isSelected = idx === activeViewportIndex;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setActiveViewportIndex(idx)}
+                      className={cn(
+                        "px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300",
+                        isSelected
+                          ? "bg-primary text-white shadow-sm"
+                          : "text-text-secondary hover:text-text"
+                      )}
+                    >
+                      {shortLabel}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="w-full flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1">
+              {isLandscapeMedia ? (
+                <DeviceFrame
+                  type="ipad"
+                  glowColor={socialMate.theme.primary}
+                  className="w-[calc(100vw-2.5rem)] sm:w-[480px] lg:w-[420px] xl:w-[490px] max-w-full h-auto aspect-[16/10] rounded-[1.75rem]"
                 >
-                  {type === "ios" ? "iOS" : "Android"}
-                </button>
-              ))}
+                  <div className="w-full h-full relative group bg-[#f7f9fa]">
+                    <AnimatePresence mode="popLayout">
+                      <motion.div
+                        key={mediaItem?.id ?? activeIndex}
+                        initial={screenTransition.initial}
+                        animate={screenTransition.animate}
+                        exit={screenTransition.exit}
+                        transition={screenTransition.transition}
+                        className="absolute inset-0 flex items-center justify-center bg-[#f7f9fa]"
+                      >
+                        {mediaItem && (
+                          <MediaPreview media={mediaItem} className="w-full h-full" objectFit="contain" />
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                </DeviceFrame>
+              ) : (
+                <DeviceFrame variant="cinematic" glowColor={socialMate.theme.primary}>
+                  <div className="w-full h-full relative group">
+                    <AnimatePresence mode="popLayout">
+                      <motion.div
+                        key={hasMultiViewportItems ? mediaItem?.id : activeIndex}
+                        initial={screenTransition.initial}
+                        animate={screenTransition.animate}
+                        exit={screenTransition.exit}
+                        transition={screenTransition.transition}
+                        className="absolute inset-0 flex items-center justify-center bg-surface"
+                      >
+                        {mediaItem ? (
+                          <MediaPreview media={mediaItem} className="w-full h-full" objectFit="cover" />
+                        ) : (
+                          <div className="p-6 text-center flex flex-col items-center justify-center h-full">
+                            <div className="w-16 h-16 rounded-2xl mb-4 flex items-center justify-center shadow-lg bg-gradient-to-br from-primary to-accent">
+                              <Icon size={28} className="text-white" />
+                            </div>
+                            <h3 className="font-bold text-lg">{activeFeature.title}</h3>
+                          </div>
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+
+                    {/* Overlay Navigation Areas */}
+                    <div
+                      className="absolute inset-y-0 left-0 w-1/2 cursor-w-resize z-20"
+                      onClick={prevFeature}
+                    />
+                    <div
+                      className="absolute inset-y-0 right-0 w-1/2 cursor-e-resize z-20"
+                      onClick={nextFeature}
+                    />
+                  </div>
+                </DeviceFrame>
+              )}
             </div>
 
-            <DeviceFrame glowColor={socialMate.theme.primary} type={deviceType} className="transition-all duration-500 ease-[0.16,1,0.3,1]">
-              <div className="w-full h-full relative group">
-                <AnimatePresence mode="popLayout" custom={activeIndex}>
-                  <motion.div
-                    key={activeIndex}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.05 }}
-                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute inset-0 flex items-center justify-center bg-surface"
-                  >
-                    {mediaItem ? (
-                      <MediaPreview media={mediaItem} className="w-full h-full" objectFit="cover" />
-                    ) : (
-                      <div className="p-6 text-center flex flex-col items-center justify-center h-full">
-                        <div className="w-16 h-16 rounded-2xl mb-4 flex items-center justify-center shadow-lg bg-gradient-to-br from-primary to-accent">
-                          <Icon size={28} className="text-white" />
-                        </div>
-                        <h3 className="font-bold text-lg">{activeFeature.title}</h3>
-                      </div>
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Overlay Navigation Areas */}
-                <div 
-                  className="absolute inset-y-0 left-0 w-1/2 cursor-w-resize z-20"
-                  onClick={prevFeature}
-                />
-                <div 
-                  className="absolute inset-y-0 right-0 w-1/2 cursor-e-resize z-20"
-                  onClick={nextFeature}
-                />
+            {hasMultiViewportItems && rawMediaItem && (
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5 text-xs text-text-secondary">
+                <span className="font-semibold text-text">
+                  {rawMediaItem.caption}
+                </span>
+                {rawMediaItem.width && rawMediaItem.height && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-surface-variant border border-border font-mono">
+                    {rawMediaItem.width} × {rawMediaItem.height}px
+                  </span>
+                )}
               </div>
-            </DeviceFrame>
+            )}
 
             {/* Pagination Controls */}
-            <div className="flex items-center justify-between w-full max-w-[280px] mt-8">
-              <button onClick={prevFeature} className="p-2 rounded-full hover:bg-surface-variant transition-colors text-text-secondary hover:text-primary">
+            <div className="flex items-center justify-between w-full max-w-[280px] mt-14">
+              <button
+                type="button"
+                aria-label="Previous feature"
+                onClick={prevFeature}
+                className="p-2 rounded-full hover:bg-surface-variant transition-colors text-text-secondary hover:text-primary"
+              >
                 <ChevronLeft size={24} />
               </button>
-              
+
               <div className="flex gap-2">
-                {socialMate.features.map((_, i) => (
+                {socialMate.features.map((feature, i) => (
                   <button
-                    key={i}
+                    type="button"
+                    key={feature.id}
+                    aria-label={`Show feature ${i + 1}: ${feature.title}`}
+                    aria-current={i === activeIndex}
                     onClick={() => setActiveIndex(i)}
                     className={cn(
                       "h-2 rounded-full transition-all duration-500",
@@ -141,28 +272,33 @@ export function SocialMateShowcase({ hideCTA = false }: { hideCTA?: boolean } = 
                 ))}
               </div>
 
-              <button onClick={nextFeature} className="p-2 rounded-full hover:bg-surface-variant transition-colors text-text-secondary hover:text-primary">
+              <button
+                type="button"
+                aria-label="Next feature"
+                onClick={nextFeature}
+                className="p-2 rounded-full hover:bg-surface-variant transition-colors text-text-secondary hover:text-primary"
+              >
                 <ChevronRight size={24} />
               </button>
             </div>
-          </div>
+          </Reveal>
 
           {/* Right Column: Feature Text */}
-          <div className="flex flex-col min-h-[300px]">
+          <Reveal className="flex flex-col min-h-[300px]" delay={0.3}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeIndex}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.4 }}
+                initial={textTransition.initial}
+                animate={textTransition.animate}
+                exit={textTransition.exit}
+                transition={textTransition.transition}
                 className="flex flex-col gap-6"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-primary/10">
                     <Icon size={24} className="text-primary" />
                   </div>
-                  <h3 className="font-display font-bold text-3xl text-text">{activeFeature.title}</h3>
+                  <h3 className="type-title font-display font-bold text-text">{activeFeature.title}</h3>
                 </div>
                 <p className="text-lg text-text-secondary leading-relaxed">
                   {activeFeature.description}
@@ -179,13 +315,13 @@ export function SocialMateShowcase({ hideCTA = false }: { hideCTA?: boolean } = 
                   Explore Full Case Study
                   <ArrowRight size={18} />
                 </Link>
-                
+
                 {socialMate.links.github && (
                   <a
                     href={socialMate.links.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-surface/50 backdrop-blur-md text-text font-medium border border-border/80 hover:bg-surface hover:border-primary/30 transition-all duration-300 shadow-sm"
+                    className="inline-flex items-center gap-2 px-8 py-4 rounded-xl glass-panel text-text font-medium hover:border-primary/40 transition-all duration-300"
                   >
                     <FaGithub size={18} />
                     GitHub Repository
@@ -193,7 +329,7 @@ export function SocialMateShowcase({ hideCTA = false }: { hideCTA?: boolean } = 
                 )}
               </div>
             )}
-          </div>
+          </Reveal>
 
         </div>
       </div>

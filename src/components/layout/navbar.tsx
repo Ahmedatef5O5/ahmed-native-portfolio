@@ -49,10 +49,10 @@ export function Navbar() {
 
   const [activeHash, setActiveHash] = React.useState("");
 
-  // For hiding header on scroll down
+  // For hiding header on scroll down and revealing only on intentional scroll up
   const [isHidden, setIsHidden] = React.useState(false);
   const lastScrollY = React.useRef(0);
-  const scrollTimeout = React.useRef<NodeJS.Timeout | null>(null);
+  const upwardScrollDelta = React.useRef(0);
 
   // IntersectionObserver-based active section tracking (decoupled from scroll)
   React.useEffect(() => {
@@ -80,6 +80,8 @@ export function Navbar() {
 
   // Throttled scroll listener using requestAnimationFrame
   React.useEffect(() => {
+    const SCROLL_TOP_VISIBLE_OFFSET = 100;
+    const SCROLL_UP_REVEAL_THRESHOLD = 72;
     let ticking = false;
 
     const handleScroll = () => {
@@ -90,22 +92,23 @@ export function Navbar() {
         const currentScrollY = window.scrollY;
         setIsScrolled(currentScrollY > 20);
 
-        // Hide on scroll down, show on scroll up
-        if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-          setIsHidden(true);
-        } else {
+        // Always keep header visible near the top of the page
+        if (currentScrollY <= SCROLL_TOP_VISIBLE_OFFSET) {
           setIsHidden(false);
+          upwardScrollDelta.current = 0;
+        } else if (currentScrollY > lastScrollY.current) {
+          // Hide immediately on any downward scroll past the top offset
+          setIsHidden(true);
+          upwardScrollDelta.current = 0;
+        } else if (currentScrollY < lastScrollY.current) {
+          // Accumulate upward scroll distance and reveal only after a real upward scroll
+          upwardScrollDelta.current += lastScrollY.current - currentScrollY;
+          if (upwardScrollDelta.current >= SCROLL_UP_REVEAL_THRESHOLD) {
+            setIsHidden(false);
+          }
         }
 
         lastScrollY.current = currentScrollY;
-
-        // Show header if scrolling stops for 3 seconds
-        if (scrollTimeout.current) {
-          clearTimeout(scrollTimeout.current);
-        }
-        scrollTimeout.current = setTimeout(() => {
-          setIsHidden(false);
-        }, 3000);
 
         // Lightweight top/bottom edge cases when on home page
         if (pathname === "/") {
@@ -125,7 +128,6 @@ export function Navbar() {
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
     };
   }, [pathname]);
 
@@ -142,7 +144,7 @@ export function Navbar() {
           className={cn(
             "flex items-center justify-between rounded-2xl px-6 py-4 transition-all duration-500",
             isScrolled
-              ? "bg-surface/70 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/20"
+              ? "glass-panel-strong"
               : "bg-transparent border-transparent"
           )}
         >

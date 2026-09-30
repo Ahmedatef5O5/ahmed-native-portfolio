@@ -20,11 +20,11 @@ export function AboutSection() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
-              <h2 className="text-sm font-bold tracking-widest uppercase text-primary mb-3 flex items-center gap-2">
+              <h2 className="type-eyebrow text-primary mb-3 flex items-center gap-2">
                 <span className="w-8 h-px bg-primary" />
                 About
               </h2>
-              <h3 className="text-3xl md:text-5xl font-display font-bold text-text mb-8 leading-tight">
+              <h3 className="type-headline font-display text-text mb-8">
                 Engineering <br /> meets product.
               </h3>
               
@@ -69,7 +69,7 @@ export function AboutSection() {
             {profileData.skillGroups.map((group) => (
               <div 
                 key={group.id} 
-                className="bg-surface/50 backdrop-blur-md border border-border/80 rounded-2xl p-6 md:p-8 hover:border-primary/30 hover:bg-surface transition-all duration-300 shadow-sm relative overflow-hidden group"
+                className="glass-panel rounded-2xl p-6 md:p-8 hover:border-primary/40 transition-all duration-300 relative overflow-hidden group"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <h4 className="text-sm font-bold uppercase tracking-wider text-text mb-6 flex items-center gap-2 relative z-10">
