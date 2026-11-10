@@ -12,6 +12,10 @@
   --success: #10b981;
   --error: #ef4444;
 
+  /* Project accent fallbacks (overridden on [slug] pages) */
+  --project-accent: var(--primary);
+  --project-accent-2: var(--accent);
+
   /* Light theme - Slate base */
   --background: #f8fafc;
   --surface: #ffffff;
@@ -42,6 +46,10 @@
   --primary-light: #93c5fd;
   --primary-deep: #2563eb;
   --accent: #38bdf8;
+
+  /* Project accent fallbacks */
+  --project-accent: var(--primary);
+  --project-accent-2: var(--accent);
 
   /* Glass system (dark) */
   --glass-bg: rgba(10, 14, 28, 0.55);
@@ -159,4 +167,38 @@ p {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 600;
+}
+
+/* Cinematic HUD Utilities */
+@utility hud-label {
+  font-family: var(--font-display), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+@utility bg-grid {
+  background-size: 36px 36px;
+  background-image: 
+    linear-gradient(to right, color-mix(in srgb, var(--border) 45%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--border) 45%, transparent) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 80%);
+}
+
+@utility hairline-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border) 50%, transparent 100%);
+}
+
+@keyframes dot-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
