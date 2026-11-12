@@ -520,8 +520,7 @@ export const projects: Project[] = [
               url: "/assets/projects/social-mate/stories-feed-1.webp",
               alt: "Stories Discovery Feed Tray with Gradient Unread Rings",
               category: "Stories & Reels",
-              role: "storytelling",
-              featureId: "stories-reels",
+              role: "gallery",
               caption: "Horizontal stories discovery tray with animated gradient unread rings and instant author navigation.",
             },
             {
@@ -538,7 +537,8 @@ export const projects: Project[] = [
               url: "/assets/projects/social-mate/your-story-display-view-1.webp",
               alt: "Full-screen Story Viewer with Segmented Progress Bars",
               category: "Stories & Reels",
-              role: "gallery",
+              role: "storytelling",
+              featureId: "stories-reels",
               caption: "24-hour ephemeral stories with segmented progress timers, author header, and quick pause.",
             },
             {
@@ -724,7 +724,7 @@ export const projects: Project[] = [
               url: "/assets/projects/social-mate/comments-thread-view-3.webp",
               alt: "Comment Input Sheet with Voice Recording and Quick Reactions",
               category: "Feed & Communities",
-              role: "gallery",
+              role: "storytelling",
               featureId: "comments-reactions",
               caption: "Multi-input comment composer supporting text, voice comments, and emoji reaction shortcuts.",
             },
