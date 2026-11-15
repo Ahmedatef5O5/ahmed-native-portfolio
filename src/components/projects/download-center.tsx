@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Cpu, HardDrive, AlertCircle, CheckCircle2, Clock, ExternalLink } from "lucide-react";
+import { Download, Cpu, HardDrive, AlertCircle, CheckCircle2, Clock, ExternalLink, Layers } from "lucide-react";
 import type { Project, ApkVariant } from "@/data/schemas";
 
 // Format bytes to MB
@@ -50,9 +50,10 @@ function MetadataGrid({
   const formattedVersion = normalizeVersion(version);
   const formattedSize = formatSize(variant.sizeBytes);
   const formattedDate = formatDate(releaseDate);
+  const effectiveBuild = variant.buildNumber || buildNumber;
 
   // Only render grid if we have at least one metadata point to show
-  if (!formattedVersion && !buildNumber && !formattedSize && !formattedDate && !commitSha) return null;
+  if (!formattedVersion && !effectiveBuild && !formattedSize && !formattedDate && !commitSha) return null;
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10 pb-8 border-b border-border/50">
@@ -62,10 +63,10 @@ function MetadataGrid({
           <span className="font-semibold text-text">{formattedVersion}</span>
         </div>
       )}
-      {buildNumber && (
+      {effectiveBuild && (
         <div>
           <span className="text-xs text-text-secondary uppercase tracking-wider block mb-1">Build</span>
-          <span className="font-semibold text-text">{buildNumber}</span>
+          <span className="font-semibold text-text">{effectiveBuild}</span>
         </div>
       )}
       {formattedSize && (
@@ -228,6 +229,11 @@ export function DownloadCenter({ project }: DownloadCenterProps) {
                         <span className="flex items-center gap-1">
                           <Cpu size={12} /> {variant.abi}
                         </span>
+                        {variant.buildNumber && (
+                          <span className="flex items-center gap-1 font-mono text-text-secondary">
+                            <Layers size={12} /> {variant.buildNumber}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>

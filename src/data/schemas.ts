@@ -36,6 +36,7 @@ export interface ApkVariant {
   fileName: string;
   sizeBytes?: number;
   sha256?: string;
+  buildNumber?: string;
   recommended?: boolean;
   status?: "available" | "pending";
 }

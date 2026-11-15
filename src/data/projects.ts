@@ -1036,8 +1036,8 @@ export const projects: Project[] = [
     },
     downloads: {
       version: SOCIAL_MATE_APK_VERSION,
-      buildNumber: "1.0.0+2",
-      releaseUrl: "https://github.com/Ahmedatef5O5/Social-Media-App/releases/latest",
+      buildNumber: "1.0.0+6",
+      releaseUrl: "https://github.com/Ahmedatef5O5/Social-Media-App/releases/tag/v1.0.0",
       commitSha: "5f0bee9",
       androidCompatibility: "minSdk 24 (Android 7.0+) — targetSdk 36",
       variants: [
@@ -1047,13 +1047,12 @@ export const projects: Project[] = [
           label: "Social Mate — ARM64-v8a",
           description:
             "Recommended for 95% of modern 64-bit Android devices (Snapdragon, MediaTek, Exynos, Tensor).",
-          fileUrl: githubReleaseAsset(
-            "Ahmedatef5O5/Social-Media-App",
-            "Social-Mate-v1.0.0-arm64-v8a.apk"
-          ),
-          fileName: "Social-Mate-v1.0.0-arm64-v8a.apk",
-          sizeBytes: 71660344,
-          sha256: "56e7eaa7e1ed5302de11ec9cefe0ec2b25dfb60bc081b17e2a02bfb4b879eeba",
+          fileUrl:
+            "https://github.com/Ahmedatef5O5/Social-Media-App/releases/download/v1.0.0/SocialMate-1.0.0+6-arm64-v8a.apk",
+          fileName: "SocialMate-1.0.0+6-arm64-v8a.apk",
+          sizeBytes: 65077940,
+          sha256: "8783158b298327c6826e4357010d89eab31ecf5ae95700e843ff66fd37331f46",
+          buildNumber: "1.0.0+6",
           recommended: true,
           status: "available",
         },
@@ -1062,13 +1061,12 @@ export const projects: Project[] = [
           abi: "armeabi-v7a",
           label: "Social Mate — ARMv7",
           description: "For older 32-bit Android devices.",
-          fileUrl: githubReleaseAsset(
-            "Ahmedatef5O5/Social-Media-App",
-            "Social-Mate-v1.0.0-armeabi-v7a.apk"
-          ),
-          fileName: "Social-Mate-v1.0.0-armeabi-v7a.apk",
-          sizeBytes: 65346052,
-          sha256: "d547201fa2b8788beebffa5bb9804bcf7afb763aebf2c14dbdd48492547f65a1",
+          fileUrl:
+            "https://github.com/Ahmedatef5O5/Social-Media-App/releases/download/v1.0.0/SocialMate-1.0.0+5-armeabi-v7a.apk",
+          fileName: "SocialMate-1.0.0+5-armeabi-v7a.apk",
+          sizeBytes: 63191860,
+          sha256: "6c987a67fd916c0a1bfdb8df9a649b8f3b0cb25b568970922478754c94218cb4",
+          buildNumber: "1.0.0+5",
           status: "available",
         },
         {
@@ -1076,13 +1074,12 @@ export const projects: Project[] = [
           abi: "x86_64",
           label: "Social Mate — x86_64",
           description: "For Android Studio emulators, PCs, and x86_64 devices.",
-          fileUrl: githubReleaseAsset(
-            "Ahmedatef5O5/Social-Media-App",
-            "Social-Mate-v1.0.0-x86_64.apk"
-          ),
-          fileName: "Social-Mate-v1.0.0-x86_64.apk",
-          sizeBytes: 77365594,
-          sha256: "1b28ad96ffa681b6e905cce2418bf0649d3b9ee480fd145241feaf2738f5ec8a",
+          fileUrl:
+            "https://github.com/Ahmedatef5O5/Social-Media-App/releases/download/v1.0.0/SocialMate-1.0.0+7-x86_64.apk",
+          fileName: "SocialMate-1.0.0+7-x86_64.apk",
+          sizeBytes: 66412174,
+          sha256: "ade474a4dde14698e001ff63916ced2e11be9becb67a28ab2791b95490e65ae9",
+          buildNumber: "1.0.0+7",
           status: "available",
         },
       ],
