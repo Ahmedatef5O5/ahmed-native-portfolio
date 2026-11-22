@@ -66,6 +66,7 @@ export default async function ProjectCaseStudy({ params }: Props) {
   );
 
   const hasDownloads = Boolean(project.downloads);
+  const heroPoster = project.media.hero?.poster;
 
   // Dynamically derive active sections for the desktop section rail
   const railSections: RailSection[] = [];
@@ -96,6 +97,16 @@ export default async function ProjectCaseStudy({ params }: Props) {
       }
       className="flex flex-col bg-background relative overflow-x-clip"
     >
+      {/* High-priority preload for hero video poster image */}
+      {heroPoster && (
+        <link
+          rel="preload"
+          as="image"
+          href={heroPoster}
+          fetchPriority="high"
+        />
+      )}
+
       {/* Scroll-Driven Top Progress Bar */}
       <ScrollProgress />
 

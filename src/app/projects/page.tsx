@@ -84,9 +84,9 @@ export default function ProjectsPage() {
               {/* Content panel */}
               <div className="relative z-20 flex flex-col justify-center gap-5 bg-surface p-8 lg:p-10 border-t border-border/50 lg:border-t-0 lg:border-l">
                 <div className="flex items-center gap-3.5">
-                  <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden shadow-md shadow-primary/20 border border-border/80 flex-shrink-0 bg-[#060913]">
+                  <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden shadow-md shadow-primary/20 border border-border/80 flex-shrink-0 bg-white">
                     <Image
-                      src="/assets/projects/social-mate/icon.png"
+                      src="/assets/projects/social-mate/onBoarding_one.png"
                       alt={`${flagshipProject.title} App Icon`}
                       fill
                       sizes="40px"
@@ -195,7 +195,7 @@ export default function ProjectsPage() {
                               alt={`${project.title} App Icon`}
                               fill
                               sizes="40px"
-                              className="object-cover"
+                              className={project.slug === "newswave" ? "object-cover scale-[1.05] bg-[#1763cf]" : "object-cover"}
                             />
                           </div>
                         )}

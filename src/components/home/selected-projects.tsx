@@ -77,7 +77,7 @@ export function SelectedProjects() {
                             alt={`${project.title} App Icon`}
                             fill
                             sizes="40px"
-                            className="object-cover"
+                            className={project.slug === "newswave" ? "object-cover scale-[1.05] bg-[#1763cf]" : "object-cover"}
                           />
                         </div>
                       )}

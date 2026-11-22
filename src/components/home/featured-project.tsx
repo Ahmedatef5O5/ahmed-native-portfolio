@@ -20,9 +20,9 @@ export function FeaturedProject() {
             Featured Project
           </span>
           <div className="flex items-center justify-center gap-3.5 mb-4">
-            <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-primary/20 border border-border/80 flex-shrink-0 bg-[#060913]">
+            <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-primary/20 border border-border/80 flex-shrink-0 bg-white">
               <Image
-                src="/assets/projects/social-mate/icon.png"
+                src="/assets/projects/social-mate/onBoarding_one.png"
                 alt={`${socialMate.title} App Icon`}
                 fill
                 sizes="40px"

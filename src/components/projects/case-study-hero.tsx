@@ -79,7 +79,7 @@ export function CaseStudyHero({ project }: { project: Project }) {
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, ease: EASE_OUT, delay: 0.1 }}
-                className="relative w-12 h-12 md:w-16 md:h-16 rounded-2xl overflow-hidden shadow-lg shadow-black/20 border border-border/80 flex-shrink-0 bg-[#060913]"
+                className={`relative w-12 h-12 md:w-16 md:h-16 rounded-2xl overflow-hidden shadow-lg shadow-black/20 border border-border/80 flex-shrink-0 ${project.slug === "social-mate" ? "bg-white" : "bg-[#060913]"}`}
               >
                 <Image
                   src={project.icon}
@@ -87,7 +87,7 @@ export function CaseStudyHero({ project }: { project: Project }) {
                   fill
                   sizes="64px"
                   priority
-                  className="object-cover"
+                  className={project.slug === "newswave" ? "object-cover scale-[1.05] bg-[#1763cf]" : "object-cover"}
                 />
               </motion.div>
             )}

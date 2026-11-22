@@ -47,6 +47,14 @@ export function SocialMateShowcase({
   const [isDocumentVisible, setIsDocumentVisible] = useState(true);
   const [isInViewport, setIsInViewport] = useState(false);
   const [progressKey, setProgressKey] = useState(0);
+  const [prevActiveIndex, setPrevActiveIndex] = useState(activeIndex);
+  const [slideMediaReady, setSlideMediaReady] = useState(false);
+
+  // Reset slideMediaReady on slide transition during render (no effect needed)
+  if (prevActiveIndex !== activeIndex) {
+    setPrevActiveIndex(activeIndex);
+    setSlideMediaReady(false);
+  }
 
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -172,7 +180,8 @@ export function SocialMateShowcase({
     !userInteracted &&
     !prefersReducedMotion &&
     totalFeatures > 1 &&
-    !isAutoAdvancePaused;
+    !isAutoAdvancePaused &&
+    slideMediaReady;
 
   useEffect(() => {
     if (!isAutoAdvanceActive) return;
@@ -455,6 +464,7 @@ export function SocialMateShowcase({
                             className="w-full h-full"
                             objectFit="contain"
                             eager
+                            onMediaReady={() => setSlideMediaReady(true)}
                           />
                         )}
                       </motion.div>
@@ -505,6 +515,7 @@ export function SocialMateShowcase({
                             className="w-full h-full"
                             objectFit="cover"
                             eager
+                            onMediaReady={() => setSlideMediaReady(true)}
                           />
                         ) : (
                           <div className="p-6 text-center flex flex-col items-center justify-center h-full">

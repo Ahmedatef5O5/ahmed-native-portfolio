@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { cn } from "@/lib/utils";
 import type { MediaItem } from "@/data/schemas";
 import { MediaPreview } from "@/components/ui/media-preview";
+import { MediaControlsSlotContext } from "@/components/ui/device-frame";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { useSwipeNavigation } from "@/hooks/use-swipe-navigation";
 import { useMediaQuery } from "@/hooks/use-media-query";
@@ -49,7 +50,11 @@ function ParallaxGrid({ items, onOpenLightbox, isMd, prefersReducedMotion }: Par
           return (
             <motion.div
               key={item.id}
-              style={!prefersReducedMotion && isMd ? { y: colParallax } : undefined}
+              style={{
+                ...(!prefersReducedMotion && isMd ? { y: colParallax } : {}),
+                contentVisibility: "auto",
+                containIntrinsicSize: "0 500px",
+              }}
               variants={staggerContainer(0.04, 0.05)}
               className="flex flex-col"
             >
@@ -71,6 +76,10 @@ function ParallaxGrid({ items, onOpenLightbox, isMd, prefersReducedMotion }: Par
                 >
                   <MediaPreview
                     media={item}
+                    eager={index < 8}
+                    priority={index < 4}
+                    hideControls
+                    preload={item.type === "video" ? "none" : undefined}
                     objectFit={item.type === "video" ? "contain" : "cover"}
                     className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105"
                   />
@@ -96,6 +105,7 @@ export function ProjectGallery({ categories }: ProjectGalleryProps) {
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]?.category || "");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [lightboxSlotEl, setLightboxSlotEl] = useState<HTMLDivElement | null>(null);
 
   const lightboxRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -108,6 +118,22 @@ export function ProjectGallery({ categories }: ProjectGalleryProps) {
     () => categories.find((c) => c.category === activeCategory)?.items || [],
     [categories, activeCategory]
   );
+
+  // Preload adjacent items for instant lightbox navigation
+  useEffect(() => {
+    if (!lightboxOpen || currentItems.length <= 1) return;
+    const nextItem = currentItems[(selectedIndex + 1) % currentItems.length];
+    const prevItem =
+      currentItems[(selectedIndex - 1 + currentItems.length) % currentItems.length];
+    [nextItem, prevItem].forEach((item) => {
+      if (!item) return;
+      const url = item.type === "video" ? item.poster : item.url;
+      if (url) {
+        const img = new window.Image();
+        img.src = url;
+      }
+    });
+  }, [lightboxOpen, selectedIndex, currentItems]);
 
   const openLightbox = useCallback((index: number) => {
     previousFocusRef.current = document.activeElement as HTMLElement;
@@ -289,6 +315,10 @@ export function ProjectGallery({ categories }: ProjectGalleryProps) {
                     >
                       <MediaPreview
                         media={item}
+                        eager={index < 8}
+                        priority={index < 4}
+                        hideControls
+                        preload={item.type === "video" ? "none" : undefined}
                         objectFit="contain"
                         className="w-full h-full transition-transform duration-500 ease-out group-hover:scale-[1.01]"
                       />
@@ -336,38 +366,46 @@ export function ProjectGallery({ categories }: ProjectGalleryProps) {
             </button>
 
             {/* Gesture-aware Lightbox Stage */}
-            <motion.div
-              {...gestureProps}
-              style={{ touchAction: "pan-y" }}
-              className="relative w-full max-w-5xl flex-1 min-h-0 max-h-[64vh] md:max-h-[74vh] flex flex-col items-center justify-center cursor-grab active:cursor-grabbing select-none"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentItems[selectedIndex]?.id || selectedIndex}
-                  layoutId={
-                    currentItems[selectedIndex]?.id
-                      ? `gallery-item-${currentItems[selectedIndex].id}`
-                      : undefined
-                  }
-                  initial={{ opacity: 0, scale: 0.98, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, scale: 1.02, filter: "blur(4px)" }}
-                  transition={{ duration: 0.35, ease: EASE_OUT }}
-                  className="relative w-full h-full flex flex-col items-center justify-center"
-                >
-                  {currentItems[selectedIndex] && (
-                    <MediaPreview
-                      media={currentItems[selectedIndex]}
-                      priority
-                      eager
-                      objectFit="contain"
-                      className="w-full h-full bg-transparent"
-                    />
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </motion.div>
+            <MediaControlsSlotContext.Provider value={{ slot: lightboxSlotEl }}>
+              <motion.div
+                {...gestureProps}
+                style={{ touchAction: "pan-y" }}
+                className="relative w-full max-w-5xl flex-1 min-h-0 max-h-[64vh] md:max-h-[74vh] flex flex-col items-center justify-center cursor-grab active:cursor-grabbing select-none"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentItems[selectedIndex]?.id || selectedIndex}
+                    layoutId={
+                      currentItems[selectedIndex]?.id
+                        ? `gallery-item-${currentItems[selectedIndex].id}`
+                        : undefined
+                    }
+                    initial={{ opacity: 0, scale: 0.98, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, scale: 1.02, filter: "blur(4px)" }}
+                    transition={{ duration: 0.35, ease: EASE_OUT }}
+                    className="relative w-full h-full flex flex-col items-center justify-center"
+                  >
+                    {currentItems[selectedIndex] && (
+                      <MediaPreview
+                        media={currentItems[selectedIndex]}
+                        priority
+                        eager
+                        objectFit="contain"
+                        className="w-full h-full bg-transparent"
+                      />
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </motion.div>
+
+              {/* Lightbox External Controls Slot (rendered underneath the preview stage) */}
+              <div
+                ref={setLightboxSlotEl}
+                className="mt-3 shrink-0 flex items-center justify-center min-h-[36px]"
+              />
+            </MediaControlsSlotContext.Provider>
 
             {currentItems[selectedIndex]?.caption && (
               <div
