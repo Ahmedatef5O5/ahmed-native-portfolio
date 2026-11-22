@@ -2,14 +2,25 @@ export type MediaType = "image" | "video" | "gif";
 
 export type MediaRole = "hero" | "storytelling" | "gallery" | "supporting" | "demo";
 
+export interface VideoSource {
+  src: string;
+  type: string;
+  media?: string;
+}
+
 export interface MediaItem {
   id: string;
   type: MediaType;
   url: string;
   alt: string;
   poster?: string;
+  posterBlur?: string;
+  sources?: VideoSource[];
+  mobileSrc?: string;
+  durationSec?: number;
   width?: number;
   height?: number;
+  blurDataURL?: string;
   caption?: string;
   description?: string;
   category?: string;

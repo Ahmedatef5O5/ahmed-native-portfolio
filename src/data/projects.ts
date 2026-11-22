@@ -11,7 +11,7 @@ export const projects: Project[] = [
     slug: "social-mate",
     title: "Social Mate",
     tagline: "Connect · Share · Discover · Belong",
-    icon: "/assets/projects/social-mate/icon.png",
+    icon: "/assets/projects/social-mate/onBoarding_one.png",
     positioning: "Production-grade, AI-powered social platform built with Flutter & Supabase",
     description: {
       short:
@@ -99,8 +99,18 @@ export const projects: Project[] = [
       hero: {
         id: "hero-social-mate",
         type: "video",
-        url: "/assets/projects/social-mate/social_mate_social_features_edited_Trim.mp4",
-        poster: "/assets/projects/social-mate/home_view.webp",
+        url: "/assets/projects/social-mate/social-mate-hero.v3.mp4",
+        mobileSrc: "/assets/projects/social-mate/social-mate-hero-mobile.v3.mp4",
+        sources: [
+          {
+            src: "/assets/projects/social-mate/social-mate-hero.v3.mp4",
+            type: "video/mp4",
+          },
+        ],
+        poster: "/assets/projects/social-mate/social-mate-hero-poster.v2.webp",
+        posterBlur:
+          "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAADwBACdASoUACsAPzmOuVUvKiWjKqwB4CcJYwDSrBab4RdIPExyhoj25MfWPoq49AAA/t7w8QKFohMwpxV0ZtECsQ0zP8Nv9oGNcqYoqmPLBAqVaAkT93nSCpvw59bD5419uTd0n2GHKykUkSYd1OucbIHeUCqMooHRz/rKlJR2hvJUg64kDmiPxoXo9SAAAAA=",
+        durationSec: 180,
         alt: "Social Mate Core Social Features & Real-Time Experience Demo",
         role: "hero",
         priority: true,
@@ -419,8 +429,22 @@ export const projects: Project[] = [
             {
               id: "ai-assistant-demo-video",
               type: "video",
-              url: "/assets/projects/social-mate/social_mate_ai_chat_and_providers_1.mp4",
-              poster: "/assets/projects/social-mate/ai-chat-streaming-1.webp",
+              url: "/assets/projects/social-mate/social-mate-ai-chat.v2.mp4",
+              mobileSrc: "/assets/projects/social-mate/social-mate-ai-chat-mobile.v2.mp4",
+              sources: [
+                {
+                  src: "/assets/projects/social-mate/social-mate-ai-chat.v2.webm",
+                  type: "video/webm",
+                },
+                {
+                  src: "/assets/projects/social-mate/social-mate-ai-chat.v2.mp4",
+                  type: "video/mp4",
+                },
+              ],
+              poster: "/assets/projects/social-mate/social-mate-ai-chat-poster.v2.webp",
+              posterBlur:
+                "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAwBQCdASoUACsAPzmKu1SvKaYjKqwB4CcJY2DrABuuL6TafF++SVBslRkm0OEctdf2AAD+2MoZ8FMAocAaWXgfPG6FX3DhWMfB90gu2v+lS2kaBuAvkzy4M3Oc+JRWi9oQZrFsVUWxoB98TALWAUxYsgZDZzK1bgem24ImbSon5/4b24vKFKQAAAA=",
+              durationSec: 19,
               alt: "Social Mate AI Assistant & Multi-Provider Chat Live Demo",
               category: "AI Assistant & Chat",
               role: "demo",

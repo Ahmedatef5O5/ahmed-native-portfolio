@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "repomix": "repomix"
+    "repomix": "repomix",
+    "media:videos": "node scripts/optimize-media.mjs --videos",
+    "media:images": "node scripts/optimize-media.mjs --images",
+    "media": "node scripts/optimize-media.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -28,6 +31,10 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
+    "ffmpeg-static": "^5.3.0",
+    "ffprobe-static": "^3.1.0",
+    "puppeteer-core": "^25.18.1",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

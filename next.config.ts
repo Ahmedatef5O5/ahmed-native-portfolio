@@ -5,7 +5,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
 
   images: {
-    formats: ["image/avif", "image/webp"],
+    formats: ["image/webp"],
+    minimumCacheTTL: 31536000,
   },
 
   experimental: {
@@ -14,6 +15,12 @@ const nextConfig: NextConfig = {
 
   async headers() {
     return [
+      {
+        source: "/assets/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
       {
         source: "/:path*",
         headers: [
